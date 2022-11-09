@@ -1,36 +1,27 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Create Task</title>
-</head>
-<body>
-<a href="{% url 'index' %}">Home</a>
+{% extends 'base.html' %}
+
+
+
+{% block content %}
 <h1>Create Task</h1>
 <form action="" method="POST">
     {% csrf_token %}
-    <label>Статус:</label>
-    <select name="status">
+    <label class="form-label">Статус:</label>
+    <select class="form-select" name="status">
         {% for value, status in statuses %}
             <option value="{{ value }}">{{ status }}</option>
         {% endfor %}
     </select>
     <br/>
-    <label>Название:</label>
-    <input type="text" name="title" required>
+    <label class="form-label">Название:</label>
+    <input class="form-control" type="text" name="title" required>
     <br/>
-    <label>Описание:</label>
-    <textarea name="description"></textarea>
+    <label class="form-label">Описание:</label>
+    <textarea class="form-control" name="description"></textarea>
     <br/>
-    <label>Дата выполнения:</label>
-    <input type="text" name="deadline">
+    <label class="form-label">Дата выполнения:</label>
+    <input class="form-control" type="text" name="deadline">
     <br/>
-    <input type="submit" value="Create">
+    <input class="btn btn-success" type="submit" value="Create">
 </form>
-
-
-</body>
-</html>
+{% endblock %}
