@@ -23,7 +23,8 @@ def create_task(request):
         title = request.POST.get('title')
         status = request.POST.get('status')
         deadline = request.POST.get('deadline')
+        description = request.POST.get('description')
         if not deadline:
             deadline = None
-        new_task = Task.objects.create(title=title, status=status, deadline=deadline)
+        new_task = Task.objects.create(title=title, status=status, deadline=deadline, description=description)
         return render(request, 'task_view.html', {'task': new_task})
