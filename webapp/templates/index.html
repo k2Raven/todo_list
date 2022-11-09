@@ -12,7 +12,7 @@
     <h1>To-Do List</h1>
 
     {% for task in tacks %}
-        <h4>Название: {{ task.title }} </h4>
+        <h4>Название: <a href="/task/{{ task.pk }}/">{{ task.title }}</a> </h4>
         <p>Статус: {{ task.get_status_display }}</p>
         <p>Дата выполнения: {{ task.deadline|date:"d F Y"|default:"-" }}</p>
         <form action="/?id={{ task.id }}" method="POST">
