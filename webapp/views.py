@@ -57,7 +57,7 @@ class UpdateTask(View):
             'title': task.title,
             'description': task.description,
             'status': task.status,
-            'type': task.type
+            'types': task.types.all()
         })
         return render(request, 'update.html', {'form': form, 'task': task})
 
@@ -68,7 +68,6 @@ class UpdateTask(View):
             task.title = form.cleaned_data['title']
             task.description = form.cleaned_data['description']
             task.status = form.cleaned_data['status']
-            task.type = form.cleaned_data['type']
             task.save()
             task.types.set(form.cleaned_data['types'])
             return redirect('task_view', pk=task.pk)
