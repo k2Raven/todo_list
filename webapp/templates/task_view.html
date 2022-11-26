@@ -13,7 +13,7 @@
         </div>
         <div class="card-body">
             <h6 class="card-title">Статус: {{ task.status.name }}</h6>
-            <h6 class="card-title">Тип: {{ task.type.name }}</h6>
+            <h6 class="card-title">Тип: {% for type in task.types.all %} {{ type }}{% if not forloop.last %},{% endif %}{% endfor %}</h6>
             <p class="card-text" style="white-space: pre-wrap">{{ task.description }}</p>
         </div>
         <div class="card-footer text-muted">

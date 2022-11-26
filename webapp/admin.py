@@ -3,7 +3,7 @@ from webapp.models import Task, Status, Type
 
 
 class TackAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title', 'status', 'type']
+    list_display = ['id', 'title', 'status']
     list_filter = ['status']
     search_fields = ['title']
     exclude = []

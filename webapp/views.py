@@ -40,7 +40,9 @@ class CreateTask(TemplateView):
     def post(self, request, *args, **kwargs):
         form = TaskForm(data=request.POST)
         if form.is_valid():
+            types = form.cleaned_data.pop('types')
             task = Task.objects.create(**form.cleaned_data)
+            task.types.set(types)
             return redirect('task_view', pk=task.pk)
         else:
             context = self.get_context_data(**kwargs)
@@ -68,6 +70,7 @@ class UpdateTask(View):
             task.status = form.cleaned_data['status']
             task.type = form.cleaned_data['type']
             task.save()
+            task.types.set(form.cleaned_data['types'])
             return redirect('task_view', pk=task.pk)
         else:
             return render(request, 'update.html', {'form': form, 'task': task})

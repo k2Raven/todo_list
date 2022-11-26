@@ -22,7 +22,9 @@
                         </h5>
                         <div class="card-body">
                             <h5 class="card-title">Статус: {{ task.status.name }}</h5>
-                            <p class="card-text">Тип: {{ task.type.name }}</p>
+                            <p class="card-text">Тип:
+                                {% for type in task.types.all %} {{ type }}{% if not forloop.last %},{% endif %}{% endfor %}
+                            </p>
                         </div>
                     </div>
                 </div>
