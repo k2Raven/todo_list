@@ -40,9 +40,10 @@ class CreateTask(TemplateView):
     def post(self, request, *args, **kwargs):
         form = TaskForm(data=request.POST)
         if form.is_valid():
-            types = form.cleaned_data.pop('types')
-            task = Task.objects.create(**form.cleaned_data)
-            task.types.set(types)
+            # types = form.cleaned_data.pop('types')
+            # task = Task.objects.create(**form.cleaned_data)
+            # task.types.set(types)
+            task = form.save()
             return redirect('task_view', pk=task.pk)
         else:
             context = self.get_context_data(**kwargs)
@@ -53,23 +54,19 @@ class CreateTask(TemplateView):
 class UpdateTask(View):
     def get(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
-        form = TaskForm(initial={
-            'title': task.title,
-            'description': task.description,
-            'status': task.status,
-            'types': task.types.all()
-        })
+        form = TaskForm(instance=task)
         return render(request, 'update.html', {'form': form, 'task': task})
 
     def post(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
-        form = TaskForm(data=request.POST)
+        form = TaskForm(instance=task, data=request.POST)
         if form.is_valid():
-            task.title = form.cleaned_data['title']
-            task.description = form.cleaned_data['description']
-            task.status = form.cleaned_data['status']
-            task.save()
-            task.types.set(form.cleaned_data['types'])
+            # task.title = form.cleaned_data['title']
+            # task.description = form.cleaned_data['description']
+            # task.status = form.cleaned_data['status']
+            # task.save()
+            # task.types.set(form.cleaned_data['types'])
+            task = form.save()
             return redirect('task_view', pk=task.pk)
         else:
             return render(request, 'update.html', {'form': form, 'task': task})
