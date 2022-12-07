@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import widgets
-from webapp.models import Type, Status, Task
+from webapp.models import Type, Status, Task, Project
 
 
 # class TaskForm(forms.Form):
@@ -12,5 +12,14 @@ from webapp.models import Type, Status, Task
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
+        exclude = ['project']
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
         exclude = []
 
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=60, required=False, label='')
