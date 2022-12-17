@@ -1,21 +1,23 @@
 from django.core.paginator import Paginator
-from django.urls import reverse
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from django.views.generic.list import MultipleObjectMixin
 
 from webapp.models import Project
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from webapp.forms import ProjectForm
 
 class ProjectListView(ListView):
     template_name = 'project/index.html'
-    model = Project
     context_object_name = 'projects'
-    ordering = '-date_started'
+
+    def get_queryset(self):
+        return Project.objects.filter(is_deleted=False).order_by('-date_started')
 
 class ProjectDetail(DetailView, MultipleObjectMixin):
-    model = Project
     template_name = 'project/project_view.html'
     paginate_by = 3
+    queryset = Project.objects.filter(is_deleted=False)
 
     def get_context_data(self, **kwargs):
         tasks = self.object.tasks.all()
@@ -29,3 +31,18 @@ class ProjectCreate(CreateView):
 
     def get_success_url(self):
         return reverse('project_view', kwargs={'pk': self.object.pk})
+
+class ProjectDelete(DeleteView):
+    model = Project
+    success_url = reverse_lazy('index')
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_deleted = True
+        self.object.save()
+        return redirect(success_url)
+

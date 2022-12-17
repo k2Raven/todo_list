@@ -19,6 +19,7 @@
             <h5 class="card-title">Дата начала:{{ project.date_started }} </h5>
             <p class="card-text">Дата окончания: {{ project.date_end|default:"-" }} </p>
             <p class="card-text" style="white-space: pre-wrap">{{ project.description }}</p>
+            <a href="{% url 'project_delete' project.pk %}" class="btn btn-danger">Delete</a>
         </div>
     </div>
 <h3>Tasks: </h3>

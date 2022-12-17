@@ -18,7 +18,7 @@ class TaskForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        exclude = []
+        exclude = ['is_deleted']
 
 
 class SearchForm(forms.Form):

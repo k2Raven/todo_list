@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 
@@ -13,6 +14,7 @@ class IndexView(SearchView):
     context_object_name = 'tasks'
     paginate_by = 2
     search_form_class = SearchForm
+    queryset = Task.objects.filter(project__is_deleted=False)
     search_fields = ['title__icontains', 'description__icontains']
 
     def post(self, request, *args, **kwargs):
@@ -25,6 +27,7 @@ class IndexView(SearchView):
 class TaskView(DetailView):
     template_name = 'task/task_view.html'
     model = Task
+    queryset = Task.objects.filter(project__is_deleted=False)
 
 
 class CreateTask(CreateView):
@@ -43,11 +46,16 @@ class CreateTask(CreateView):
 class UpdateTask(View):
     def get(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
+        if task.project.is_deleted:
+             raise Http404
         form = TaskForm(instance=task)
         return render(request, 'task/update.html', {'form': form, 'task': task})
 
     def post(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
+
+        if task.project.is_deleted:
+             raise Http404
         form = TaskForm(instance=task, data=request.POST)
         if form.is_valid():
             # task.title = form.cleaned_data['title']
@@ -64,9 +72,14 @@ class UpdateTask(View):
 class DeleteTask(View):
     def get(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
+
+        if task.project.is_deleted:
+             raise Http404
         return render(request, 'task/delete.html', {'task': task})
 
     def post(self, request, *args, **kwargs):
         task = get_object_or_404(Task, pk=kwargs['pk'])
+        if task.project.is_deleted:
+             raise Http404
         task.delete()
         return redirect('index')

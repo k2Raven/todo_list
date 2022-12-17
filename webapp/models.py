@@ -34,6 +34,7 @@ class Project(models.Model):
     description = models.TextField(max_length=3000, verbose_name='Описание')
     date_started = models.DateField(verbose_name='Дата Начала')
     date_end = models.DateField(null=True, blank=True, verbose_name='Дата Окончания')
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.id}. {self.title}'
