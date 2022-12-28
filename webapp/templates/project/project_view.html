@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 
 {% block nav %}
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'webapp:project_add' %}">Create Project ( + )</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'webapp:change_users' project.pk %}">Change Users ( + )</a>
-    </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="{% url 'webapp:task_add' project.pk %}">Create Task ( + )</a>
-    </li>
+    {% if perms.webapp.add_project %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'webapp:project_add' %}">Create Project ( + )</a>
+        </li>
+    {% endif %}
+    {% if perms.webapp.add_users_in_project and request.user in project.users.all %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'webapp:change_users' project.pk %}">Change Users ( + )</a>
+        </li>
+    {% endif %}
+    {% if perms.webapp.add_task and request.user in project.users.all %}
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'webapp:task_add' project.pk %}">Create Task ( + )</a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -23,9 +29,12 @@
             <p class="card-text">Дата окончания: {{ project.date_end|default:"-" }} </p>
             <p class="card-text">Пользователи: {% for user in project.users.all %}{{ user.username }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
             <p class="card-text" style="white-space: pre-wrap">{{ project.description }}</p>
-
-            <a href="{% url 'webapp:project_update' project.pk %}" class="btn btn-primary">Update</a>
-            <a href="{% url 'webapp:project_delete' project.pk %}" class="btn btn-danger">Delete</a>
+            {% if perms.webapp.change_project %}
+                <a href="{% url 'webapp:project_update' project.pk %}" class="btn btn-primary">Update</a>
+            {% endif %}
+            {% if perms.webapp.delete_project %}
+                <a href="{% url 'webapp:project_delete' project.pk %}" class="btn btn-danger">Delete</a>
+            {% endif %}
         </div>
     </div>
 <h3>Tasks: </h3>
@@ -47,8 +56,12 @@
                         <p class="card-text" style="white-space: pre-wrap">{{ task.description }}</p>
                     </div>
                     <div class="card-footer text-muted">
-                        <a href="{% url 'webapp:task_update' task.pk %}" class="btn btn-primary">Update</a>
-                        <a href="{% url 'webapp:task_delete' task.pk %}" class="btn btn-danger">Delete</a>
+                        {% if perms.webapp.change_task and request.user in project.users.all %}
+                            <a href="{% url 'webapp:task_update' task.pk %}" class="btn btn-primary">Update</a>
+                        {% endif %}
+                        {% if perms.webapp.delete_task and request.user in project.users.all %}
+                            <a href="{% url 'webapp:task_delete' task.pk %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
