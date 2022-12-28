@@ -28,6 +28,11 @@ class ProjectCreate(CreateView):
     template_name = 'project/create.html'
     form_class = ProjectForm
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.users.add(self.request.user)
+        return super().form_valid(form)
+
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
