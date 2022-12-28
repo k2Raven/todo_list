@@ -18,7 +18,7 @@
                         <h5 class="card-header"><input class="form-check-input" name="tasks" type="checkbox"
                                                        value="{{ task.pk }}"
                         > Название: <a
-                                href="{% url 'task_view' task.pk %}">{{ task.title }}</a>
+                                href="{% url 'webapp:task_view' task.pk %}">{{ task.title }}</a>
                         </h5>
                         <div class="card-body">
                             <h5 class="card-title">Статус: {{ task.status.name }}</h5>

@@ -4,7 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.list import MultipleObjectMixin
 
 from webapp.models import Project
-from django.views.generic import ListView, DetailView, CreateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from webapp.forms import ProjectForm
 
 class ProjectListView(ListView):
@@ -32,9 +32,18 @@ class ProjectCreate(CreateView):
     def get_success_url(self):
         return reverse('project_view', kwargs={'pk': self.object.pk})
 
+
+class ProjectUpdate(UpdateView):
+    model = Project
+    template_name = 'project/update.html'
+    form_class = ProjectForm
+
+    def get_success_url(self):
+        return reverse('project_view', kwargs={'pk': self.object.pk})
+
 class ProjectDelete(DeleteView):
     model = Project
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('webapp:index')
 
     def get(self, request, *args, **kwargs):
         return self.delete(request, *args, **kwargs)

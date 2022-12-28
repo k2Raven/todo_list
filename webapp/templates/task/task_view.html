@@ -12,8 +12,8 @@
             <p class="card-text" style="white-space: pre-wrap">{{ task.description }}</p>
         </div>
         <div class="card-footer text-muted">
-            <a href="{% url 'task_update' task.pk %}" class="btn btn-primary">Update</a>
-            <a href="{% url 'task_delete' task.pk %}" class="btn btn-danger">Delete</a>
+            <a href="{% url 'webapp:task_update' task.pk %}" class="btn btn-primary">Update</a>
+            <a href="{% url 'webapp:task_delete' task.pk %}" class="btn btn-danger">Delete</a>
         </div>
     </div>
 {% endblock %}

@@ -4,7 +4,7 @@ from django.urls import reverse
 
 from webapp.models import Task, Project
 from webapp.forms import TaskForm, SearchForm
-from django.views.generic import TemplateView, View, DetailView, CreateView
+from django.views.generic import View, DetailView, CreateView, UpdateView, DeleteView
 from webapp.views import SearchView
 
 
@@ -43,43 +43,16 @@ class CreateTask(CreateView):
         return reverse('project_view', kwargs={'pk': self.object.project.pk})
 
 
-class UpdateTask(View):
-    def get(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, pk=kwargs['pk'])
-        if task.project.is_deleted:
-             raise Http404
-        form = TaskForm(instance=task)
-        return render(request, 'task/update.html', {'form': form, 'task': task})
-
-    def post(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, pk=kwargs['pk'])
-
-        if task.project.is_deleted:
-             raise Http404
-        form = TaskForm(instance=task, data=request.POST)
-        if form.is_valid():
-            # task.title = form.cleaned_data['title']
-            # task.description = form.cleaned_data['description']
-            # task.status = form.cleaned_data['status']
-            # task.save()
-            # task.types.set(form.cleaned_data['types'])
-            task = form.save()
-            return redirect('task_view', pk=task.pk)
-        else:
-            return render(request, 'task/update.html', {'form': form, 'task': task})
+class UpdateTask(UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'task/update.html'
+    def get_success_url(self):
+        return reverse('project_view', kwargs={'pk': self.object.project.pk})
 
 
-class DeleteTask(View):
-    def get(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, pk=kwargs['pk'])
-
-        if task.project.is_deleted:
-             raise Http404
-        return render(request, 'task/delete.html', {'task': task})
-
-    def post(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, pk=kwargs['pk'])
-        if task.project.is_deleted:
-             raise Http404
-        task.delete()
-        return redirect('index')
+class DeleteTask(DeleteView):
+    model = Task
+    template_name = 'task/delete.html'
+    def get_success_url(self):
+        return reverse('project_view', kwargs={'pk': self.object.project.pk})
