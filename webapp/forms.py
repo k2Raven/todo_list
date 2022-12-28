@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import get_user_model
 from django.forms import widgets
 from webapp.models import Type, Status, Task, Project
 
@@ -21,9 +22,23 @@ class ProjectForm(forms.ModelForm):
         fields = ['title', 'description', 'date_started', 'date_end']
 
 class ChangeUsersInProjectForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.fields['users'].queryset = get_user_model().objects.exclude(pk=self.user.pk)
     class Meta:
         model = Project
         fields = ['users']
+        widgets = {'users' : widgets.CheckboxSelectMultiple}
+
+    def save(self, commit=True):
+        project = super().save(commit=commit)
+
+        if commit:
+            project.users.add(self.user)
+            project.save()
+
+        return project
 
 
 class SearchForm(forms.Form):

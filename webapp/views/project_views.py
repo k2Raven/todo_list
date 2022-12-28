@@ -6,12 +6,14 @@ from webapp.models import Project
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from webapp.forms import ProjectForm, ChangeUsersInProjectForm
 
+
 class ProjectListView(ListView):
     template_name = 'project/index.html'
     context_object_name = 'projects'
 
     def get_queryset(self):
         return Project.objects.filter(is_deleted=False).order_by('-date_started')
+
 
 class ProjectDetail(DetailView, MultipleObjectMixin):
     template_name = 'project/project_view.html'
@@ -22,6 +24,7 @@ class ProjectDetail(DetailView, MultipleObjectMixin):
         tasks = self.object.tasks.all()
         context = super().get_context_data(object_list=tasks, **kwargs)
         return context
+
 
 class ProjectCreate(CreateView):
     model = Project
@@ -45,6 +48,7 @@ class ProjectUpdate(UpdateView):
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
+
 class ProjectDelete(DeleteView):
     model = Project
     success_url = reverse_lazy('webapp:index')
@@ -59,10 +63,16 @@ class ProjectDelete(DeleteView):
         self.object.save()
         return redirect(success_url)
 
+
 class ChangeUsersInProjectView(UpdateView):
     model = Project
     form_class = ChangeUsersInProjectForm
     template_name = 'project/change_user.html'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
     def get_success_url(self):
         return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
