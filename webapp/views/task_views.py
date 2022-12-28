@@ -40,7 +40,7 @@ class CreateTask(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.project.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.project.pk})
 
 
 class UpdateTask(UpdateView):
@@ -48,11 +48,11 @@ class UpdateTask(UpdateView):
     form_class = TaskForm
     template_name = 'task/update.html'
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.project.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.project.pk})
 
 
 class DeleteTask(DeleteView):
     model = Task
     template_name = 'task/delete.html'
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.project.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.project.pk})

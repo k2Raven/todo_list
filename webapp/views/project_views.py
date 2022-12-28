@@ -1,11 +1,10 @@
-from django.core.paginator import Paginator
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic.list import MultipleObjectMixin
 
 from webapp.models import Project
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
-from webapp.forms import ProjectForm
+from webapp.forms import ProjectForm, ChangeUsersInProjectForm
 
 class ProjectListView(ListView):
     template_name = 'project/index.html'
@@ -30,7 +29,7 @@ class ProjectCreate(CreateView):
     form_class = ProjectForm
 
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
 
 class ProjectUpdate(UpdateView):
@@ -39,7 +38,7 @@ class ProjectUpdate(UpdateView):
     form_class = ProjectForm
 
     def get_success_url(self):
-        return reverse('project_view', kwargs={'pk': self.object.pk})
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})
 
 class ProjectDelete(DeleteView):
     model = Project
@@ -55,3 +54,10 @@ class ProjectDelete(DeleteView):
         self.object.save()
         return redirect(success_url)
 
+class ChangeUsersInProjectView(UpdateView):
+    model = Project
+    form_class = ChangeUsersInProjectForm
+    template_name = 'project/change_user.html'
+
+    def get_success_url(self):
+        return reverse('webapp:project_view', kwargs={'pk': self.object.pk})

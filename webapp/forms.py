@@ -18,7 +18,12 @@ class TaskForm(forms.ModelForm):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        exclude = ['is_deleted']
+        fields = ['title', 'description', 'date_started', 'date_end']
+
+class ChangeUsersInProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['users']
 
 
 class SearchForm(forms.Form):
